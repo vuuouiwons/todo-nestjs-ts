@@ -76,7 +76,7 @@ export class TodolistController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Retrieve a specific todolist by ID' })
+  @ApiOperation({ summary: 'Retrieve a todolist and its todos by ID' })
   @ApiOkResponse({
     description: 'Todolist successfully retrieved.',
     type: ResponseTodolistDto,
