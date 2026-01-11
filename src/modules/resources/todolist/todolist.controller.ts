@@ -26,16 +26,16 @@ import {
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
 import { TodolistService } from './todolist.service';
-import { CreateTodolistDto } from './dto/create-todolist.dto';
+import { CreateTodolistDto, GetTodolistsQueryDto } from './dto/create-todolist.dto';
 import { UpdateTodolistDto } from './dto/update-todolist.dto';
 import { ResponseTodolistDto } from './dto/response-todolist.dto';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import { IdentityInterceptor } from 'src/interceptors/identity/identity.interceptor';
 import { ValidationPipe } from 'src/pipes/validation/validation.pipe';
-import { 
-  UnprocessableEntityErrorMessage, 
-  requestBodyMissingMessage, 
-  unauthorizedMessage 
+import {
+  UnprocessableEntityErrorMessage,
+  requestBodyMissingMessage,
+  unauthorizedMessage
 } from 'src/common/constants';
 
 @ApiTags('Todolist')
@@ -50,7 +50,7 @@ import {
   version: '1',
 })
 export class TodolistController {
-  constructor(private readonly todolistService: TodolistService) {}
+  constructor(private readonly todolistService: TodolistService) { }
 
   @Post()
   @ApiOperation({ summary: 'Create a new todolist' })
@@ -74,7 +74,7 @@ export class TodolistController {
   })
   findAll(
     @Req() request,
-    @Query() query
+    @Query(new ValidationPipe()) query: GetTodolistsQueryDto
   ): Promise<ResponseTodolistDto[]> {
     return this.todolistService.findAll(request.user, query.limit, query.offset);
   }
