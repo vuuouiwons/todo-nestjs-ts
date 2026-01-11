@@ -61,6 +61,7 @@ export class TodoController {
     type: ResponseTodoDto,
   })
   @ApiNotFoundResponse({ description: 'The associated todolist was not found.' })
+  @ApiBadRequestResponse({ description: requestBodyMissingMessage })
   create(
     @Req() request,
     @Body(new ValidationPipe()) createTodoDto: CreateTodoDto,
@@ -96,6 +97,7 @@ export class TodoController {
     type: ResponseTodoDto 
   })
   @ApiNotFoundResponse({ description: 'The todo item or associated todolist was not found.' })
+  @ApiBadRequestResponse({ description: requestBodyMissingMessage })
   update(
     @Req() request,
     @Param('id', new ParseIntPipe()) id: number,

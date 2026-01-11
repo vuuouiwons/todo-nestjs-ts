@@ -43,7 +43,6 @@ import {
 @UseGuards(AuthGuard)
 @UseInterceptors(IdentityInterceptor)
 @ApiUnauthorizedResponse({ description: unauthorizedMessage })
-@ApiBadRequestResponse({ description: requestBodyMissingMessage })
 @ApiUnprocessableEntityResponse({ description: UnprocessableEntityErrorMessage })
 @Controller({
   path: 'todolist',
@@ -58,6 +57,7 @@ export class TodolistController {
     description: 'The todolist has been successfully created.',
     type: ResponseTodolistDto,
   })
+  @ApiBadRequestResponse({ description: requestBodyMissingMessage })
   create(
     @Req() request,
     @Body(new ValidationPipe()) createTodolistDto: CreateTodolistDto,
@@ -99,6 +99,7 @@ export class TodolistController {
     description: 'The todolist has been successfully updated.',
     type: ResponseTodolistDto,
   })
+  @ApiBadRequestResponse({ description: requestBodyMissingMessage })
   update(
     @Req() request,
     @Param('id', ParseIntPipe) id: number,
