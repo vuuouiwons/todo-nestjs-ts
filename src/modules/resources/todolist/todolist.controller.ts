@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterceptors, Req, UnprocessableEntityException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterceptors, Req, UnprocessableEntityException, ParseIntPipe, HttpCode, HttpStatus } from '@nestjs/common';
 import { TodolistService } from './todolist.service';
 import { CreateTodolistDto } from './dto/create-todolist.dto';
 import { UpdateTodolistDto } from './dto/update-todolist.dto';
@@ -8,6 +8,7 @@ import { ValidationPipe } from 'src/pipes/validation/validation.pipe';
 import { ApiUnprocessableEntityResponse, ApiBadRequestResponse, ApiCreatedResponse, ApiOkResponse, ApiBearerAuth, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { UnprocessableEntityErrorMessage, requestBodyMissingMessage, unauthorizedMessage } from 'src/common/constants';
 import { ResponseTodolistDto } from './dto/response-todolist.dto';
+import { User } from '../user/entities/user.entity';
 
 @UseGuards(AuthGuard)
 @UseInterceptors(IdentityInterceptor)
@@ -29,7 +30,7 @@ export class TodolistController {
   create(
     @Req() request,
     @Body(new ValidationPipe()) createTodolistDto: CreateTodolistDto
-  ) {
+  ): Promise<ResponseTodolistDto> {
     return this.todolistService.create(request.user, createTodolistDto);
   }
 
@@ -39,7 +40,7 @@ export class TodolistController {
     type: ResponseTodolistDto,
     isArray: true
   })
-  findAll(@Req() request) {
+  findAll(@Req() request): Promise<ResponseTodolistDto[]> {
     return this.todolistService.findAll(request.user);
   }
 
@@ -49,12 +50,18 @@ export class TodolistController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTodolistDto: UpdateTodolistDto) {
-    return this.todolistService.update(+id, updateTodolistDto);
+  update(
+    @Req() request,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateTodolistDto: UpdateTodolistDto) {
+    return this.todolistService.update(request.user, +id, updateTodolistDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.todolistService.remove(+id);
+  @HttpCode(HttpStatus.NO_CONTENT)
+  remove(
+    @Req() request,
+    @Param('id', ParseIntPipe) id: number) {
+    return this.todolistService.remove(request.user, id);
   }
 }

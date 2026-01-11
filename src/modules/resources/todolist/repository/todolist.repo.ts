@@ -32,6 +32,36 @@ export class TodolistRepo {
                     id: user.id
                 }
             },
+            order: {
+                updatedAt: 'ASC'
+            }
         })
     }
+
+    async findOne(user: User, id: number, manager?: EntityManager) {
+        const repo = this.getManager(manager);
+
+        return await repo.findOneBy({
+            user: {
+                id: user.id
+            },
+            id
+        })
+    }
+
+    async update(todolist: Todolist, newTodolistPartial: Partial<Todolist>, manager?: EntityManager) {
+        const repo = this.getManager(manager);
+
+        const updatedTodolist = await repo.merge(todolist, newTodolistPartial);
+
+        return repo.save(updatedTodolist);
+    }
+
+    async delete(todolist: Todolist, manager?: EntityManager) {
+        const repo = this.getManager(manager);
+
+        await repo.remove(todolist);
+
+        return null;
+    };
 }

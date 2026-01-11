@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { CreateTodolistDto } from './dto/create-todolist.dto';
 import { UpdateTodolistDto } from './dto/update-todolist.dto';
 import { TodolistRepo } from './repository/todolist.repo';
@@ -56,11 +56,37 @@ export class TodolistService {
     return `This action returns a #${id} todolist`;
   }
 
-  update(id: number, updateTodolistDto: UpdateTodolistDto) {
-    return `This action updates a #${id} todolist`;
+  async update(user: User, id: number, updateTodolistDto: UpdateTodolistDto): Promise<ResponseTodolistDto> {
+    return await this.dataSource.transaction(async (manager) => {
+      const todolist = await this.todolistRepo.findOne(user, id, manager);
+
+      if (!todolist) {
+        throw new NotFoundException('todolist not found');
+      }
+
+      const newTodolist = await this.todolistRepo.update(todolist, updateTodolistDto, manager);
+
+      const parsedNewTodolist = {
+        id: newTodolist.id,
+        title: newTodolist.title,
+        status: newTodolist.status
+      };
+
+      return parsedNewTodolist;
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} todolist`;
+  async remove(user: User, id: number): Promise<null> {
+    return await this.dataSource.transaction(async (manager) => {
+      const todolist = await this.todolistRepo.findOne(user, id, manager);
+
+      if (!todolist) {
+        throw new NotFoundException('todolist not found');
+      }
+
+      await this.todolistRepo.delete(todolist, manager);
+
+      return null;
+    });
   }
 }

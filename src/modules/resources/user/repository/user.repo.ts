@@ -38,11 +38,20 @@ export class UserRepo {
         });
     }
 
-    async update(user: User, newUserPartial: Partial<User>, manager?: EntityManager) {
+    async update(user: User, newUserPartial: Partial<User>, manager?: EntityManager): Promise<User> {
         const repo = this.getManager(manager);
 
         const updatedUser = repo.merge(user, newUserPartial);
 
         return repo.save(updatedUser);
     }
+
+    async delete(user: User, manager?: EntityManager): Promise<null> {
+        const repo = this.getManager(manager);
+
+        await repo.remove(user);
+
+        return null;
+    }
+
 }
