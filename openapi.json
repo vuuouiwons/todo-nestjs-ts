@@ -1,0 +1,828 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "health",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The service is functional and responding correctly."
+          }
+        },
+        "summary": "Perform a system health check",
+        "tags": [
+          "System"
+        ]
+      }
+    },
+    "/v1/todolist": {
+      "post": {
+        "operationId": "create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTodolistDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The todolist has been successfully created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseTodolistDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request must include a body"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Payload validation failed"
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Create a new todolist",
+        "tags": [
+          "Todolist"
+        ]
+      },
+      "get": {
+        "operationId": "findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Todolists successfully retrieved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ResponseTodolistDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request must include a body"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Payload validation failed"
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Retrieve all todolists for the authenticated user",
+        "tags": [
+          "Todolist"
+        ]
+      }
+    },
+    "/v1/todolist/{id}": {
+      "get": {
+        "operationId": "findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Todolist successfully retrieved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseTodolistDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request must include a body"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Payload validation failed"
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Retrieve a todolist and its todos by ID",
+        "tags": [
+          "Todolist"
+        ]
+      },
+      "patch": {
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTodolistDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The todolist has been successfully updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseTodolistDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request must include a body"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Payload validation failed"
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Update an existing todolist",
+        "tags": [
+          "Todolist"
+        ]
+      },
+      "delete": {
+        "operationId": "remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The todolist has been successfully removed."
+          },
+          "400": {
+            "description": "Request must include a body"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Payload validation failed"
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Delete a todolist",
+        "tags": [
+          "Todolist"
+        ]
+      }
+    },
+    "/v1/todo": {
+      "post": {
+        "operationId": "create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTodoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The todo item has been successfully created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseTodoDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request must include a body"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "The associated todolist was not found."
+          },
+          "422": {
+            "description": "Payload validation failed"
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Create a new todo item",
+        "tags": [
+          "Todo"
+        ]
+      },
+      "get": {
+        "operationId": "findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Todo items successfully retrieved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ResponseTodoDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request must include a body"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "The specified todolist was not found."
+          },
+          "422": {
+            "description": "Payload validation failed"
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Retrieve todo items for a specific todolist",
+        "tags": [
+          "Todo"
+        ]
+      }
+    },
+    "/v1/todo/{id}": {
+      "patch": {
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTodoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The todo item has been successfully updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseTodoDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request must include a body"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "The todo item or associated todolist was not found."
+          },
+          "422": {
+            "description": "Payload validation failed"
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Update an existing todo item",
+        "tags": [
+          "Todo"
+        ]
+      },
+      "delete": {
+        "operationId": "remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The todo item has been successfully removed."
+          },
+          "400": {
+            "description": "Request must include a body"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "The todo item was not found."
+          },
+          "422": {
+            "description": "Payload validation failed"
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Delete a todo item",
+        "tags": [
+          "Todo"
+        ]
+      }
+    },
+    "/v1/user/me": {
+      "get": {
+        "operationId": "me",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "User profile successfully retrieved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseUserMeDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request must include a body"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Retrieve the authenticated user profile",
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/v1/user": {
+      "patch": {
+        "operationId": "update",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User profile has been successfully updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseUserMeDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request must include a body"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Update user profile information",
+        "tags": [
+          "User"
+        ]
+      },
+      "delete": {
+        "operationId": "delete",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "User account has been successfully removed."
+          },
+          "400": {
+            "description": "Confirmation username does not match."
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Delete the user account",
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/v1/auth/register": {
+      "post": {
+        "operationId": "register",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignUpDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User registered"
+          },
+          "400": {
+            "description": "Request must include a body"
+          },
+          "409": {
+            "description": "Email already registered"
+          },
+          "422": {
+            "description": "Payload validation failed"
+          }
+        },
+        "summary": "Register user",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/v1/auth/login": {
+      "post": {
+        "operationId": "login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignInDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Login success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSignInDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid credentials"
+          },
+          "422": {
+            "description": "Payload validation failed"
+          }
+        },
+        "summary": "Login",
+        "tags": [
+          "Auth"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Todolist API",
+    "description": "Sample Backend for simple todolist api",
+    "version": "1",
+    "contact": {
+
+    }
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "access-token": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "CreateTodolistDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "i am todolist title",
+            "description": "Title for todolist"
+          },
+          "status": {
+            "type": "boolean",
+            "example": false,
+            "description": "Todolist status"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "ResponseTodolistDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Generated todolist id"
+          },
+          "title": {
+            "type": "string",
+            "description": "Todolist title"
+          },
+          "status": {
+            "type": "boolean",
+            "description": "Todolist status"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "status"
+        ]
+      },
+      "UpdateTodolistDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "i am todolist title",
+            "description": "Title for todolist"
+          },
+          "status": {
+            "type": "boolean",
+            "example": false,
+            "description": "Todolist status"
+          }
+        }
+      },
+      "CreateTodoDto": {
+        "type": "object",
+        "properties": {
+          "todolistId": {
+            "type": "number",
+            "example": 1234,
+            "description": "todolistId that is attached to this todo"
+          },
+          "message": {
+            "type": "string",
+            "example": "i am todo message",
+            "description": "Message for a todo"
+          },
+          "status": {
+            "type": "boolean",
+            "example": false,
+            "description": "todo status"
+          }
+        },
+        "required": [
+          "todolistId",
+          "message"
+        ]
+      },
+      "ResponseTodoDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "todo id"
+          },
+          "message": {
+            "type": "string",
+            "description": "todo message"
+          },
+          "status": {
+            "type": "boolean",
+            "description": "todo status"
+          }
+        },
+        "required": [
+          "id",
+          "message",
+          "status"
+        ]
+      },
+      "UpdateTodoDto": {
+        "type": "object",
+        "properties": {
+
+        }
+      },
+      "ResponseUserMeDto": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "username of user"
+          }
+        },
+        "required": [
+          "username"
+        ]
+      },
+      "UpdateUserDto": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "foo_bar",
+            "description": "Any username"
+          }
+        }
+      },
+      "DeleteUserDto": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "foo_bar",
+            "description": "confirmation username to delete account"
+          }
+        },
+        "required": [
+          "username"
+        ]
+      },
+      "SignUpDto": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "foo_bar",
+            "description": "Any username"
+          },
+          "email": {
+            "type": "string",
+            "example": "user@example.com",
+            "description": "User email address"
+          },
+          "password": {
+            "type": "string",
+            "example": "T3sting!",
+            "description": "password must include uppercase, lowercase, number, special character, and no spaces",
+            "minLength": 8,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "username",
+          "email",
+          "password"
+        ]
+      },
+      "SignInDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "user@example.com",
+            "description": "User email address"
+          },
+          "password": {
+            "type": "string",
+            "example": "T3sting!",
+            "description": "password must include uppercase, lowercase, number, special character, and no spaces",
+            "minLength": 8,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "ResponseSignInDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "bearer token"
+          }
+        },
+        "required": [
+          "token"
+        ]
+      }
+    }
+  }
+}
