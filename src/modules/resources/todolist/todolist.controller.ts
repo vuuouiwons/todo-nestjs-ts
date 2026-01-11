@@ -12,6 +12,7 @@ import {
   ParseIntPipe,
   HttpCode,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -71,8 +72,11 @@ export class TodolistController {
     type: ResponseTodolistDto,
     isArray: true,
   })
-  findAll(@Req() request): Promise<ResponseTodolistDto[]> {
-    return this.todolistService.findAll(request.user);
+  findAll(
+    @Req() request,
+    @Query() query
+  ): Promise<ResponseTodolistDto[]> {
+    return this.todolistService.findAll(request.user, query.limit, query.offset);
   }
 
   @Get(':id')

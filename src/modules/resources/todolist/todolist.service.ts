@@ -36,9 +36,9 @@ export class TodolistService {
     });
   }
 
-  async findAll(user: User): Promise<ResponseTodolistDto[]> {
+  async findAll(user: User, limit: number, offset: number): Promise<ResponseTodolistDto[]> {
     return await this.dataSource.transaction(async (manager) => {
-      const todolists = await this.todolistRepo.findAll(user, manager);
+      const todolists = await this.todolistRepo.findAll(user, limit, offset, manager);
 
       const parsedTodolists = todolists.map((todolist) => {
         return {

@@ -1,6 +1,6 @@
-import { IsNotEmpty, IsOptional, IsString, IsBoolean, MaxLength } from "class-validator";
+import { IsNotEmpty, IsOptional, IsString, IsBoolean, MaxLength, Max, Min, IsInt } from "class-validator";
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 
 export class CreateTodolistDto {
     @ApiProperty({
@@ -21,4 +21,19 @@ export class CreateTodolistDto {
     @IsBoolean() // Added: ensures the value is a boolean
     @Transform(({ value }) => value === 'true' || value === true) // Optional: converts string "true"/"false" to boolean
     status?: boolean;
+}
+
+export class GetTodolistsQueryDto {
+    @IsOptional()
+    @Type(() => Number)
+    @IsInt()
+    @Min(1)
+    @Max(100)
+    limit: number = 20;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsInt()
+    @Min(0)
+    offset: number = 0;
 }

@@ -23,7 +23,7 @@ export class TodolistRepo {
         return await repo.save(newTodo);
     }
 
-    async findAll(user: User, manager?: EntityManager) {
+    async findAll(user: User, limit: number, offset: number, manager?: EntityManager) {
         const repo = this.getManager(manager);
 
         return await repo.find({
@@ -34,7 +34,9 @@ export class TodolistRepo {
             },
             order: {
                 updatedAt: 'ASC'
-            }
+            },
+            take: limit,
+            skip: offset,
         })
     }
 
