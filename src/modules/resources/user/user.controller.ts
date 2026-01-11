@@ -1,24 +1,41 @@
-import { Controller, Get, Post, Delete, Body, Patch, UseInterceptors, Version, HttpCode, UseGuards, Req, HttpStatus } from '@nestjs/common';
 import {
-  ApiBadRequestResponse,
+  Controller,
+  Get,
+  Patch,
+  Delete,
+  Body,
+  Req,
+  UseGuards,
+  UseInterceptors,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
+import {
+  ApiTags,
   ApiBearerAuth,
-  ApiCreatedResponse,
+  ApiOperation,
   ApiOkResponse,
-  ApiUnauthorizedResponse
+  ApiCreatedResponse,
+  ApiNoContentResponse,
+  ApiBadRequestResponse,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 
 import { UserService } from './user.service';
 import { IdentityInterceptor } from 'src/interceptors/identity/identity.interceptor';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import { ResponseUserMeDto } from './dto/response-user.dto';
-import { unauthorizedMessage } from 'src/common/constants';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ValidationPipe } from 'src/pipes/validation/validation.pipe';
-// import { ValidationPipe } from '@nestjs/common';
 import { DeleteUserDto } from './dto/delete-user.dto';
-import { requestBodyMissingMessage } from 'src/common/constants';
-@ApiUnauthorizedResponse({ description: unauthorizedMessage })
+import { ValidationPipe } from 'src/pipes/validation/validation.pipe';
+import { 
+  unauthorizedMessage, 
+  requestBodyMissingMessage 
+} from 'src/common/constants';
+
+@ApiTags('User')
 @ApiBearerAuth('access-token')
+@ApiUnauthorizedResponse({ description: unauthorizedMessage })
 @ApiBadRequestResponse({ description: requestBodyMissingMessage })
 @UseGuards(AuthGuard)
 @UseInterceptors(IdentityInterceptor)
@@ -27,34 +44,45 @@ import { requestBodyMissingMessage } from 'src/common/constants';
   version: '1',
 })
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
-  @Get('/me')
+  @Get('me')
+  @ApiOperation({ summary: 'Retrieve the authenticated user profile' })
   @ApiOkResponse({
-    description: 'get user preference',
-    type: ResponseUserMeDto
+    description: 'User profile successfully retrieved.',
+    type: ResponseUserMeDto,
   })
   async me(@Req() request): Promise<ResponseUserMeDto> {
     return this.userService.userMe(request.user);
   }
 
   @Patch()
-  @HttpCode(HttpStatus.CREATED)
-  @ApiCreatedResponse({ description: 'User preference updated' })
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Update user profile information' })
+  @ApiOkResponse({
+    description: 'User profile has been successfully updated.',
+    type: ResponseUserMeDto,
+  })
   async update(
     @Req() request,
-    @Body(new ValidationPipe()) body: UpdateUserDto
+    @Body(new ValidationPipe()) body: UpdateUserDto,
   ): Promise<ResponseUserMeDto> {
-    return this.userService.updateUser(request.user, body)
+    return this.userService.updateUser(request.user, body);
   }
 
   @Delete()
   @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiBadRequestResponse({ description: 'Confirmation username does not match' })
+  @ApiOperation({ summary: 'Delete the user account' })
+  @ApiNoContentResponse({ 
+    description: 'User account has been successfully removed.' 
+  })
+  @ApiBadRequestResponse({ 
+    description: 'Confirmation username does not match.' 
+  })
   async delete(
     @Req() request,
     @Body(new ValidationPipe()) body: DeleteUserDto,
   ): Promise<void> {
-    return this.userService.deleteUser(request.user, body)
+    return this.userService.deleteUser(request.user, body);
   }
 }
