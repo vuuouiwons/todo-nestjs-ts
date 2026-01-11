@@ -4,8 +4,8 @@ import { UpdateTodolistDto } from './dto/update-todolist.dto';
 import { TodolistRepo } from './repository/todolist.repo';
 import { DataSource } from 'typeorm';
 import { TodolistI } from './interfaces/todolist.interface';
-import { User } from 'src/common/database/user.entity';
-import { Todolist } from 'src/common/database/todolist.entity';
+import { User } from '../user/entities/user.entity';
+import { Todolist } from './entities/todolist.entity';
 import { ResponseTodolistDto } from './dto/response-todolist.dto';
 
 @Injectable()

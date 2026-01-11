@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
-import { User } from "./user.entity"
-import { Todo } from "./todo.entity"
+import { User } from "../../user/entities/user.entity"
+import { Todo } from "../../todo/entities/todo.entity"
 
 @Entity()
 export class Todolist {

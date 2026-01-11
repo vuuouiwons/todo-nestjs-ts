@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
-import { Todolist } from "./todolist.entity"
+import { Todolist } from "../../todolist/entities/todolist.entity"
 
 @Entity()
 export class Todo {

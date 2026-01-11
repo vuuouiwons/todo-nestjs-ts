@@ -1,6 +1,6 @@
 import { Injectable, Inject, BadRequestException } from '@nestjs/common';
 import { UserRepo } from './repository/user.repo';
-import { User } from 'src/common/database/user.entity';
+import { User } from './entities/user.entity';
 import { ResponseUserMeDto } from './dto/response-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { DataSource } from 'typeorm';

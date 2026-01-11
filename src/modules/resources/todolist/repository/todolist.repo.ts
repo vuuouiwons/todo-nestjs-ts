@@ -1,8 +1,8 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { DataSource, EntityManager, Repository } from 'typeorm';
-import { Todolist } from 'src/common/database/todolist.entity';
+import { Todolist } from '../entities/todolist.entity';
 import { TodolistI } from '../interfaces/todolist.interface';
-import { User } from 'src/common/database/user.entity';
+import { User } from 'src/modules/resources/user/entities/user.entity';
 
 @Injectable()
 export class TodolistRepo {

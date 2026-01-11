@@ -1,5 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm"
-import { Todolist } from "./todolist.entity"
+import { Todolist } from "../../todolist/entities/todolist.entity"
 import { ApiProperty } from "@nestjs/swagger"
 
 @Entity()

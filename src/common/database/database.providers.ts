@@ -1,9 +1,9 @@
 import { DataSource } from 'typeorm';
 import { Module } from '@nestjs/common';
 
-import { Todo } from './todo.entity';
-import { Todolist } from './todolist.entity';
-import { User } from './user.entity';
+import { Todo } from '../../modules/resources/todo/entities/todo.entity';
+import { Todolist } from '../../modules/resources/todolist/entities/todolist.entity';
+import { User } from '../../modules/resources/user/entities/user.entity';
 
 
 const databaseProviders = [
