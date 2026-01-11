@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsOptional, IsString, IsBoolean, MaxLength, Max, Min, IsInt } from "class-validator";
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
 
 export class CreateTodolistDto {
@@ -24,6 +24,11 @@ export class CreateTodolistDto {
 }
 
 export class GetTodolistsQueryDto {
+    @ApiPropertyOptional({
+        description: 'Number of items to return',
+        example: 10,
+        default: 10
+    })
     @IsOptional()
     @Type(() => Number)
     @IsInt()
@@ -31,6 +36,11 @@ export class GetTodolistsQueryDto {
     @Max(100)
     limit: number = 20;
 
+    @ApiPropertyOptional({
+        description: 'Number of items to return',
+        example: 10,
+        default: 10
+    })
     @IsOptional()
     @Type(() => Number)
     @IsInt()
