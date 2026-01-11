@@ -33,10 +33,10 @@ import { ResponseTodoDto } from './dto/response-todo.dto';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import { IdentityInterceptor } from 'src/interceptors/identity/identity.interceptor';
 import { ValidationPipe } from 'src/pipes/validation/validation.pipe';
-import { 
-  UnprocessableEntityErrorMessage, 
-  requestBodyMissingMessage, 
-  unauthorizedMessage 
+import {
+  UnprocessableEntityErrorMessage,
+  requestBodyMissingMessage,
+  unauthorizedMessage
 } from 'src/common/constants';
 
 @ApiTags('Todo')
@@ -51,7 +51,7 @@ import {
   version: '1',
 })
 export class TodoController {
-  constructor(private readonly todoService: TodoService) {}
+  constructor(private readonly todoService: TodoService) { }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -64,7 +64,7 @@ export class TodoController {
   @ApiBadRequestResponse({ description: requestBodyMissingMessage })
   create(
     @Req() request,
-    @Body(new ValidationPipe()) createTodoDto: CreateTodoDto,
+    @Body() createTodoDto: CreateTodoDto,
   ): Promise<ResponseTodoDto> {
     return this.todoService.create(request.user, createTodoDto);
   }
@@ -79,7 +79,7 @@ export class TodoController {
   @ApiNotFoundResponse({ description: 'The specified todolist was not found.' })
   findAll(
     @Req() request,
-    @Query(new ValidationPipe()) query: GetTodosQueryDto,
+    @Query() query: GetTodosQueryDto,
   ): Promise<ResponseTodoDto[]> {
     return this.todoService.findAll(
       request.user,
@@ -92,16 +92,16 @@ export class TodoController {
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Update an existing todo item' })
-  @ApiOkResponse({ 
+  @ApiOkResponse({
     description: 'The todo item has been successfully updated.',
-    type: ResponseTodoDto 
+    type: ResponseTodoDto
   })
   @ApiNotFoundResponse({ description: 'The todo item or associated todolist was not found.' })
   @ApiBadRequestResponse({ description: requestBodyMissingMessage })
   update(
     @Req() request,
     @Param('id', new ParseIntPipe()) id: number,
-    @Body(new ValidationPipe()) updateTodoDto: UpdateTodoDto,
+    @Body() updateTodoDto: UpdateTodoDto,
   ): Promise<ResponseTodoDto> {
     return this.todoService.update(request.user, id, updateTodoDto);
   }

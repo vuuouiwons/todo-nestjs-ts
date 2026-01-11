@@ -28,9 +28,9 @@ import { ResponseUserMeDto } from './dto/response-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { DeleteUserDto } from './dto/delete-user.dto';
 import { ValidationPipe } from 'src/pipes/validation/validation.pipe';
-import { 
-  unauthorizedMessage, 
-  requestBodyMissingMessage 
+import {
+  unauthorizedMessage,
+  requestBodyMissingMessage
 } from 'src/common/constants';
 
 @ApiTags('User')
@@ -44,7 +44,7 @@ import {
   version: '1',
 })
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @Get('me')
   @ApiOperation({ summary: 'Retrieve the authenticated user profile' })
@@ -65,7 +65,7 @@ export class UserController {
   })
   async update(
     @Req() request,
-    @Body(new ValidationPipe()) body: UpdateUserDto,
+    @Body() body: UpdateUserDto,
   ): Promise<ResponseUserMeDto> {
     return this.userService.updateUser(request.user, body);
   }
@@ -73,15 +73,15 @@ export class UserController {
   @Delete()
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Delete the user account' })
-  @ApiNoContentResponse({ 
-    description: 'User account has been successfully removed.' 
+  @ApiNoContentResponse({
+    description: 'User account has been successfully removed.'
   })
-  @ApiBadRequestResponse({ 
-    description: 'Confirmation username does not match.' 
+  @ApiBadRequestResponse({
+    description: 'Confirmation username does not match.'
   })
   async delete(
     @Req() request,
-    @Body(new ValidationPipe()) body: DeleteUserDto,
+    @Body() body: DeleteUserDto,
   ): Promise<void> {
     return this.userService.deleteUser(request.user, body);
   }

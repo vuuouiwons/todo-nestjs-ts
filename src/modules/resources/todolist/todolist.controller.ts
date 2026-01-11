@@ -60,7 +60,7 @@ export class TodolistController {
   @ApiBadRequestResponse({ description: requestBodyMissingMessage })
   create(
     @Req() request,
-    @Body(new ValidationPipe()) createTodolistDto: CreateTodolistDto,
+    @Body() createTodolistDto: CreateTodolistDto,
   ): Promise<ResponseTodolistDto> {
     return this.todolistService.create(request.user, createTodolistDto);
   }
@@ -74,7 +74,7 @@ export class TodolistController {
   })
   findAll(
     @Req() request,
-    @Query(new ValidationPipe()) query: GetTodolistsQueryDto
+    @Query() query: GetTodolistsQueryDto
   ): Promise<ResponseTodolistDto[]> {
     return this.todolistService.findAll(request.user, query.limit, query.offset);
   }
@@ -103,7 +103,7 @@ export class TodolistController {
   update(
     @Req() request,
     @Param('id', ParseIntPipe) id: number,
-    @Body(new ValidationPipe()) updateTodolistDto: UpdateTodolistDto,
+    @Body() updateTodolistDto: UpdateTodolistDto,
   ): Promise<ResponseTodolistDto> {
     return this.todolistService.update(request.user, id, updateTodolistDto);
   }

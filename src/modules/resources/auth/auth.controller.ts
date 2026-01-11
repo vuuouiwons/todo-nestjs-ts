@@ -29,7 +29,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Register user' })
   @ApiCreatedResponse({ description: 'User registered' })
   @ApiConflictResponse({ description: 'Email already registered' })
-  async register(@Body(new ValidationPipe()) body: SignUpDto): Promise<void> {
+  async register(@Body() body: SignUpDto): Promise<void> {
     return this.authService.signUp(body);
   }
 
@@ -38,7 +38,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Login' })
   @ApiCreatedResponse({ description: 'Login success', type: ResponseSignInDto })
   @ApiBadRequestResponse({ description: loginError })
-  async login(@Body(new ValidationPipe()) body: SignInDto): Promise<ResponseSignInDto> {
+  async login(@Body() body: SignInDto): Promise<ResponseSignInDto> {
     return this.authService.signIn(body);
   }
 }
