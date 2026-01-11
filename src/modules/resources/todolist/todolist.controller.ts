@@ -5,7 +5,7 @@ import { UpdateTodolistDto } from './dto/update-todolist.dto';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import { IdentityInterceptor } from 'src/interceptors/identity/identity.interceptor';
 import { ValidationPipe } from 'src/pipes/validation/validation.pipe';
-import { ApiUnprocessableEntityResponse, ApiBadRequestResponse, ApiCreatedResponse, ApiOkResponse, ApiBearerAuth, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { ApiUnprocessableEntityResponse, ApiBadRequestResponse, ApiCreatedResponse, ApiOkResponse, ApiBearerAuth, ApiUnauthorizedResponse, ApiNoContentResponse } from '@nestjs/swagger';
 import { UnprocessableEntityErrorMessage, requestBodyMissingMessage, unauthorizedMessage } from 'src/common/constants';
 import { ResponseTodolistDto } from './dto/response-todolist.dto';
 import { User } from '../user/entities/user.entity';
@@ -50,6 +50,11 @@ export class TodolistController {
   }
 
   @Patch(':id')
+  @HttpCode(HttpStatus.CREATED)
+  @ApiCreatedResponse({
+    description: 'todolist updated succesfully',
+    type: ResponseTodolistDto,
+  })
   update(
     @Req() request,
     @Param('id', ParseIntPipe) id: number,
@@ -59,6 +64,9 @@ export class TodolistController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiNoContentResponse({
+    description: 'todolsit deleted from db',
+  })
   remove(
     @Req() request,
     @Param('id', ParseIntPipe) id: number) {
