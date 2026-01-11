@@ -1,10 +1,6 @@
-This is a great start for a technical README. To make it professional and "hire-ready," we should focus on clarity, visual hierarchy, and explaining the *why* behind your architectural choices.
-
-Here is a revamped version of your documentation.
-
----
-
 # 📝 NestJS ToDo Microservice
+
+![techstack image](images/techstack.jpg)
 
 A robust, production-ready ToDo list backend built with a focus on modular architecture and type safety.
 
