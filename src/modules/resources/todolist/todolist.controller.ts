@@ -1,75 +1,118 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterceptors, Req, UnprocessableEntityException, ParseIntPipe, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  UseInterceptors,
+  Req,
+  ParseIntPipe,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiTags,
+  ApiOperation,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiNoContentResponse,
+  ApiUnauthorizedResponse,
+  ApiBadRequestResponse,
+  ApiUnprocessableEntityResponse,
+} from '@nestjs/swagger';
 import { TodolistService } from './todolist.service';
 import { CreateTodolistDto } from './dto/create-todolist.dto';
 import { UpdateTodolistDto } from './dto/update-todolist.dto';
+import { ResponseTodolistDto } from './dto/response-todolist.dto';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import { IdentityInterceptor } from 'src/interceptors/identity/identity.interceptor';
 import { ValidationPipe } from 'src/pipes/validation/validation.pipe';
-import { ApiUnprocessableEntityResponse, ApiBadRequestResponse, ApiCreatedResponse, ApiOkResponse, ApiBearerAuth, ApiUnauthorizedResponse, ApiNoContentResponse } from '@nestjs/swagger';
-import { UnprocessableEntityErrorMessage, requestBodyMissingMessage, unauthorizedMessage } from 'src/common/constants';
-import { ResponseTodolistDto } from './dto/response-todolist.dto';
-import { User } from '../user/entities/user.entity';
+import { 
+  UnprocessableEntityErrorMessage, 
+  requestBodyMissingMessage, 
+  unauthorizedMessage 
+} from 'src/common/constants';
 
+@ApiTags('Todolist')
+@ApiBearerAuth('access-token')
 @UseGuards(AuthGuard)
 @UseInterceptors(IdentityInterceptor)
-@ApiBearerAuth('access-token')
-@ApiUnprocessableEntityResponse({ description: UnprocessableEntityErrorMessage })
-@ApiBadRequestResponse({ description: requestBodyMissingMessage })
 @ApiUnauthorizedResponse({ description: unauthorizedMessage })
+@ApiBadRequestResponse({ description: requestBodyMissingMessage })
+@ApiUnprocessableEntityResponse({ description: UnprocessableEntityErrorMessage })
 @Controller({
-  path: 'todolist', version: '1'
+  path: 'todolist',
+  version: '1',
 })
 export class TodolistController {
-  constructor(private readonly todolistService: TodolistService) { }
+  constructor(private readonly todolistService: TodolistService) {}
 
   @Post()
+  @ApiOperation({ summary: 'Create a new todolist' })
   @ApiCreatedResponse({
-    description: 'todolist created',
-    type: ResponseTodolistDto
+    description: 'The todolist has been successfully created.',
+    type: ResponseTodolistDto,
   })
   create(
     @Req() request,
-    @Body(new ValidationPipe()) createTodolistDto: CreateTodolistDto
+    @Body(new ValidationPipe()) createTodolistDto: CreateTodolistDto,
   ): Promise<ResponseTodolistDto> {
     return this.todolistService.create(request.user, createTodolistDto);
   }
 
   @Get()
+  @ApiOperation({ summary: 'Retrieve all todolists for the authenticated user' })
   @ApiOkResponse({
-    description: 'todolist retrived',
+    description: 'Todolists successfully retrieved.',
     type: ResponseTodolistDto,
-    isArray: true
+    isArray: true,
   })
   findAll(@Req() request): Promise<ResponseTodolistDto[]> {
     return this.todolistService.findAll(request.user);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.todolistService.findOne(+id);
+  @ApiOperation({ summary: 'Retrieve a specific todolist by ID' })
+  @ApiOkResponse({
+    description: 'Todolist successfully retrieved.',
+    type: ResponseTodolistDto,
+  })
+  findOne(
+    @Req() request,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<ResponseTodolistDto> {
+    return this.todolistService.findOne(request.user, id);
   }
 
   @Patch(':id')
-  @HttpCode(HttpStatus.CREATED)
-  @ApiCreatedResponse({
-    description: 'todolist updated succesfully',
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Update an existing todolist' })
+  @ApiOkResponse({
+    description: 'The todolist has been successfully updated.',
     type: ResponseTodolistDto,
   })
   update(
     @Req() request,
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateTodolistDto: UpdateTodolistDto) {
-    return this.todolistService.update(request.user, +id, updateTodolistDto);
+    @Body(new ValidationPipe()) updateTodolistDto: UpdateTodolistDto,
+  ): Promise<ResponseTodolistDto> {
+    return this.todolistService.update(request.user, id, updateTodolistDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Delete a todolist' })
   @ApiNoContentResponse({
-    description: 'todolsit deleted from db',
+    description: 'The todolist has been successfully removed.',
   })
   remove(
     @Req() request,
-    @Param('id', ParseIntPipe) id: number) {
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<void> {
     return this.todolistService.remove(request.user, id);
   }
 }

@@ -10,10 +10,12 @@ import { HttpExceptionFilter } from './filters/http-exception/http-exception.fil
 import { UserModule } from './modules/resources/user/user.module';
 import { AuthModule } from './modules/resources/auth/auth.module';
 import { TodolistModule } from './modules/resources/todolist/todolist.module';
+import { TodoModule } from './modules/resources/todo/todo.module';
 
 @Module({
   imports: [
     TodolistModule,
+    TodoModule,
     DatabaseModule,
     UserModule,
     AuthModule

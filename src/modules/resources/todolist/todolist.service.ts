@@ -52,8 +52,22 @@ export class TodolistService {
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} todolist`;
+  async findOne(user: User, id: number): Promise<ResponseTodolistDto> {
+    return await this.dataSource.transaction(async (manager) => {
+      const todolist = await this.todolistRepo.findOne(user, id, manager);
+
+      if (!todolist) {
+        throw new NotFoundException('todolist not found');
+      }
+
+      const parsedTodolist = {
+        id: todolist.id,
+        title: todolist.title,
+        status: todolist.status,
+      }
+
+      return parsedTodolist
+    });
   }
 
   async update(user: User, id: number, updateTodolistDto: UpdateTodolistDto): Promise<ResponseTodolistDto> {
@@ -76,7 +90,7 @@ export class TodolistService {
     });
   }
 
-  async remove(user: User, id: number): Promise<null> {
+  async remove(user: User, id: number): Promise<void> {
     return await this.dataSource.transaction(async (manager) => {
       const todolist = await this.todolistRepo.findOne(user, id, manager);
 
@@ -85,8 +99,6 @@ export class TodolistService {
       }
 
       await this.todolistRepo.delete(todolist, manager);
-
-      return null;
     });
   }
 }
