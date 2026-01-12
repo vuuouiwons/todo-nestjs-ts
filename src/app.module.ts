@@ -11,6 +11,7 @@ import { UserModule } from './modules/resources/user/user.module';
 import { AuthModule } from './modules/resources/auth/auth.module';
 import { TodolistModule } from './modules/resources/todolist/todolist.module';
 import { TodoModule } from './modules/resources/todo/todo.module';
+import { ExpressMetricsMiddleware } from './modules/prometheus/express/express.service';
 
 @Module({
   imports: [
@@ -38,7 +39,7 @@ import { TodoModule } from './modules/resources/todo/todo.module';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply(LoggerMiddleware)
-      .forRoutes({ path: '*', method: RequestMethod.ALL })
+      .apply(LoggerMiddleware, ExpressMetricsMiddleware)
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
   }
 }
