@@ -4,14 +4,14 @@ import { tap, catchError, finalize, map } from 'rxjs/operators';
 import { v4 as uuidv4 } from 'uuid';
 import { WrappedResponseDto } from './request.interceptor.dto';
 import { Reflector } from '@nestjs/core';
-import { IS_PUBLIC_KEY } from '../../common/decorators/skip.interceptor';
+import { SKIP } from '../../common/decorators/skip.interceptor';
 
 @Injectable()
 export class RequestInterceptor implements NestInterceptor {
   constructor(private reflector: Reflector) { }
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    const isSkipped = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+    const isSkipped = this.reflector.getAllAndOverride<boolean>(SKIP, [
       context.getHandler(),
       context.getClass(),
     ]);
