@@ -1,21 +1,24 @@
-FROM node:lts-alpine3.22 AS build-app
+FROM node:22-alpine3.22 AS base
 
 WORKDIR /build
+
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+
+FROM base AS build-app
 
 COPY . .
 
-RUN npm ci
+RUN pnpm install --frozen-lockfile
 
-RUN npm run build
+RUN pnpm run build
 
-FROM node:lts-alpine3.22 AS build-dep
+FROM base AS build-dep
 
-WORKDIR /build
+COPY package.json pnpm-lock.yaml ./
 
-COPY package.json .
-COPY package-lock.json .
-
-RUN npm ci --omit=dev
+RUN pnpm install --prod --frozen-lockfile
 
 FROM node:lts-alpine3.22 AS prod
 
@@ -24,10 +27,9 @@ WORKDIR /app
 RUN chown -R node:node /app
 
 COPY --from=build-app --chown=node:node /build/dist /app/dist
+COPY --from=build-app --chown=node:node /build/package.json /app/package.json
 COPY --from=build-dep --chown=node:node /build/node_modules /app/node_modules
 
 USER node
 
-ENTRYPOINT [ "docker-entrypoint.sh" ]
-
-CMD [ "/app/dist/main.js" ]
+CMD [ "node", "/app/dist/main.js" ]

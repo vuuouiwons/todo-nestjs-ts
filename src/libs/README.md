@@ -1,2 +1,0 @@
-# lib
-global buisness logic

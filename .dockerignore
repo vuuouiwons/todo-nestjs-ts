@@ -1,8 +1,0 @@
-.env
-Dockerfile.*
-images
-README.md
-eslint.config.mjs
-nest-cli.json
-node_modules
-dist
