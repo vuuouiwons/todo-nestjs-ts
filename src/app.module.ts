@@ -9,11 +9,9 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import configuration from './config/configuration';
 import { BullModule } from '@nestjs/bullmq';
 import { Email } from './email/email';
-import { Notification } from './notification/notification';
 import { BullBoardModule } from "@bull-board/nestjs";
 import { ExpressAdapter } from "@bull-board/express";
 import { EmailModule } from './email/email.module';
-import { NotificationModule } from './notification/notification.module';
 import basicAuth from "express-basic-auth";
 
 @Module({
@@ -70,12 +68,8 @@ import basicAuth from "express-basic-auth";
     AuthModule,
     HealthModule,
     EmailModule,
-    NotificationModule
   ],
   controllers: [],
-  providers: [
-    Email,
-    Notification
-  ],
+  providers: [],
 })
 export class AppModule { }
