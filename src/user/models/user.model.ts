@@ -1,5 +1,5 @@
 import { Table, Column, Model, DataType, Unique, HasMany } from "sequelize-typescript";
-import { Todolist } from "src/modules/todolist/models/todolist.model";
+import { Todolist } from "src/todolist/models/todolist.model";
 
 @Table({
     tableName: 'users',
