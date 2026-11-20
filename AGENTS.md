@@ -40,7 +40,6 @@ src/
 │   ├── filters/        # Global exception filters (HttpExceptionFilter for OpenAPI error format)
 │   └── guards/         # Security guards (e.g., JwtAuthGuard)
 ├── config/             # Application configuration loader and YAML files
-├── email/              # BullMQ queue processors and email handling
 ├── health/             # Health check endpoints
 ├── app.module.ts       # Root module assembling all feature modules
 └── main.ts             # Application entrypoint & global configuration

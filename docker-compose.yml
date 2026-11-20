@@ -1,13 +1,4 @@
 services:
-  etc-redis:
-    container_name: redis
-    image: redis:7.4.3-alpine3.21
-    ports:
-      - 6379:6379
-    command: ["redis-server", "--requirepass", "password"]
-    networks:
-      - todolist
-
   etc-postgres:
     container_name: pg-database
     image: postgres:17-alpine
