@@ -1,29 +1,103 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Delete,
+  Param,
+  Body,
+  Query,
+  UseGuards,
+  HttpCode,
+  HttpStatus,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { TodoService } from './todo.service';
-import { CreateTodoDto } from './dto/create-todo.dto';
-import { UpdateTodoDto } from './dto/update-todo.dto';
+import {
+  TodoQueryDto,
+  CreateTodoRequestDto,
+  UpdateTodoRequestDto,
+  UpdateTodoSingleBodyDto,
+} from './dto/todo.dto';
+import { BulkDeleteRequestDto } from '../common/dto/bulk-delete.dto';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
+import { CurrentUser } from '../common/decorators/current-user.decorator';
+import {
+  ApiTodoTags,
+  ApiGetTodos,
+  ApiCreateTodo,
+  ApiPatchTodos,
+  ApiDeleteTodos,
+  ApiGetTodoById,
+  ApiPatchTodoById,
+  ApiDeleteTodoById,
+} from './todo.swagger';
 
+@ApiTodoTags()
+@UseGuards(JwtAuthGuard)
 @Controller('todo')
 export class TodoController {
   constructor(private readonly todoService: TodoService) {}
 
-  @Post()
-  create(@Body() createTodoDto: CreateTodoDto) {
-    return this.todoService.create(createTodoDto);
+  @Get()
+  @ApiGetTodos()
+  findAll(@CurrentUser('id') userId: number, @Query() query: TodoQueryDto) {
+    return this.todoService.findAll(userId, query);
   }
 
-  @Get()
-  findAll() {
-    return this.todoService.findAll();
+  @Post()
+  @HttpCode(HttpStatus.CREATED)
+  @ApiCreateTodo()
+  create(
+    @CurrentUser('id') userId: number,
+    @Body() body: CreateTodoRequestDto | CreateTodoRequestDto[],
+  ) {
+    return this.todoService.create(userId, body);
+  }
+
+  @Patch()
+  @ApiPatchTodos()
+  patchBulk(
+    @CurrentUser('id') userId: number,
+    @Body() body: UpdateTodoRequestDto | UpdateTodoRequestDto[],
+  ) {
+    return this.todoService.patchBulk(userId, body);
+  }
+
+  @Delete()
+  @ApiDeleteTodos()
+  deleteBulk(
+    @CurrentUser('id') userId: number,
+    @Body() body: BulkDeleteRequestDto,
+  ) {
+    return this.todoService.deleteBulk(userId, body.ids);
+  }
+
+  @Get(':id')
+  @ApiGetTodoById()
+  findOne(
+    @CurrentUser('id') userId: number,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    return this.todoService.findOne(userId, id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTodoDto: UpdateTodoDto) {
-    return this.todoService.update(+id, updateTodoDto);
+  @ApiPatchTodoById()
+  patchOne(
+    @CurrentUser('id') userId: number,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: UpdateTodoSingleBodyDto,
+  ) {
+    return this.todoService.patchOne(userId, id, body);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.todoService.remove(+id);
+  @ApiDeleteTodoById()
+  deleteOne(
+    @CurrentUser('id') userId: number,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    return this.todoService.deleteOne(userId, id);
   }
 }

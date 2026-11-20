@@ -5,14 +5,16 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { HealthModule } from './health/health.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { SequelizeModule } from '@nestjs/sequelize';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import configuration from './config/configuration';
 import { BullModule } from '@nestjs/bullmq';
-import { Email } from './email/email';
-import { BullBoardModule } from "@bull-board/nestjs";
-import { ExpressAdapter } from "@bull-board/express";
+import { BullBoardModule } from '@bull-board/nestjs';
+import { ExpressAdapter } from '@bull-board/express';
 import { EmailModule } from './email/email.module';
-import basicAuth from "express-basic-auth";
+import basicAuth from 'express-basic-auth';
+import { User } from './user/entities/user.entity';
+import { Todolist } from './todolist/entities/todolist.entity';
+import { Todo } from './todo/entities/todo.entity';
 
 @Module({
   imports: [
@@ -22,17 +24,18 @@ import basicAuth from "express-basic-auth";
       envFilePath: ['.env', '.env.development', '.env.staging'],
       ignoreEnvFile: process.env.ENVIRONMENT === 'production',
     }),
-    SequelizeModule.forRootAsync({
+    TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        dialect: 'postgres',
+        type: 'postgres',
         host: configService.get<string>('DATABASE_HOST'),
         port: configService.get<number>('database.postgresql.port'),
         username: configService.get<string>('DATABASE_USER'),
         password: configService.get<string>('DATABASE_PASS'),
         database: configService.get<string>('database.postgresql.db'),
-        autoLoadModels: true,
+        entities: [User, Todolist, Todo],
+        autoLoadEntities: true,
         synchronize: true,
       }),
     }),
@@ -44,7 +47,7 @@ import basicAuth from "express-basic-auth";
           host: configService.get<string>('REDIS_HOST'),
           port: configService.get<number>('redis.port'),
           password: configService.get<string>('REDIS_PASSWORD'),
-          db: configService.get<number>('redis.bullmq_db')
+          db: configService.get<number>('redis.bullmq_db'),
         },
       }),
     }),
@@ -57,19 +60,22 @@ import basicAuth from "express-basic-auth";
         middleware: basicAuth({
           challenge: true,
           users: {
-            admin: configService.get<string>('BULLMQ_ADMIN_PASSWORD', 'password')
-          }
-        })
-      })
+            admin: configService.get<string>(
+              'BULLMQ_ADMIN_PASSWORD',
+              'password',
+            ),
+          },
+        }),
+      }),
     }),
-    TodolistModule,
-    TodoModule,
     UserModule,
     AuthModule,
+    TodolistModule,
+    TodoModule,
     HealthModule,
     EmailModule,
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule { }
+export class AppModule {}
